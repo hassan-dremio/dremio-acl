@@ -101,7 +101,7 @@ def submit(client, objs):
     for obj in objs:
         try:
             client.simple().update_catalog(quote(obj['id'], safe=''), obj)
-        except DremioException, e:
+        except DremioException as e:
             print(e)
             bad.append(obj)
     return bad
@@ -170,7 +170,7 @@ def update_acl(client, acl_defs, datasets, source_folder, source_only, default_a
                     db_object = client.simple().catalog_item(None, child["path"])
                     d = update_object_acl(db_object, acl_defs, default_acl, out)
                     dirty_datasets.extend(d)
-                except Exception, e:
+                except Exception as e:
                     print(e)
                     out("Unable to process database {}".format("/".join(child["path"])))
     elif source_folder["entityType"] == "folder":
@@ -179,7 +179,7 @@ def update_acl(client, acl_defs, datasets, source_folder, source_only, default_a
             db_object = client.simple().catalog_item(None, source_folder["path"])
             d = update_object_acl(db_object, acl_defs, default_acl, out)
             dirty_datasets.extend(d)
-        except Exception, e:
+        except Exception as e:
             print(e)
             out("Unable to process database {}".format("/".join(source_folder["path"])))
     if not source_only: #process PDSs
@@ -193,7 +193,7 @@ def update_acl(client, acl_defs, datasets, source_folder, source_only, default_a
                 out("GET /catalog/by-path/ took {} for {}".format(difference, "/".join(pds["path"])))
                 d = update_object_acl(pds, acl_defs, default_acl, out)
                 dirty_datasets.extend(d)
-            except Exception, e:
+            except Exception as  e:
                 print(e)
                 out("Unable to process PDS {}".format("/".join(dataset_path)))
     last_run = len(dirty_datasets) + 1
@@ -221,7 +221,7 @@ def update_space_acl(client, acl_defs, datasets, default_acl, out=lambda x: x):
             out("GET /catalog/by-path/ took {} for {}".format(difference, (obj["name"] if obj["entityType"] == "space" else "/".join(obj["path"]))))
             d = update_object_acl(obj, acl_defs, default_acl, out)
             dirty_datasets.extend(d)
-        except Exception, e:
+        except Exception as  e:
             print(e)
             out("Unable to process {}".format("/".join(dataset_path)))
     last_run = len(dirty_datasets) + 1
@@ -265,7 +265,7 @@ def update_acls_to_folder(client, datasets, source_folder, default_acl, del_pds_
                                 supersetAclEntry['permissions'] = supersetPermissions
                         if not isAclIdInSuperset:
                             aclSuperset[aclEntry].append(pdsAclEntry)
-        except Exception, e:
+        except Exception as  e:
             print(e)
             out("Unable to process PDS {}".format("/".join(dataset_path)))
     out("Superset ACLs: {}".format(aclSuperset))
